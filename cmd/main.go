@@ -2,9 +2,10 @@ package main
 
 import (
 	"gin-gorm-example/configs"
-	"gin-gorm-example/internal/router"
-	"github.com/gin-gonic/gin"
+	routes "gin-gorm-example/internal/router"
 	"log"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -16,6 +17,9 @@ func main() {
 
 	// 初始化 Gin 引擎
 	r := gin.Default()
+
+	// 配置静态文件目录（公开上传目录）
+	r.Static(configs.GlobalConfig.ImagePath, configs.GlobalConfig.UploadDir) // 映射上传目录到静态 URL
 
 	// 设置路由
 	routes.SetupRoutes(r)

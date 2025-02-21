@@ -19,6 +19,7 @@ type Config struct {
 	DBName     string
 	ImagePath  string
 	CreateDB   bool
+	UploadDir  string
 }
 
 // GlobalConfig 存储全局的配置
@@ -43,6 +44,7 @@ func InitConfig() {
 	// 加载图片路径
 	GlobalConfig.ImagePath = cfg.Section("image").Key("path").String()
 	GlobalConfig.CreateDB, _ = cfg.Section("database_settings").Key("createdb").Bool()
+	GlobalConfig.UploadDir = cfg.Section("image").Key("upload_dir").String()
 }
 
 // InitDB 初始化数据库连接
@@ -74,6 +76,11 @@ func InitDB() error {
 func migrateDB() error {
 	// 自动迁移所有模型
 	err := DB.AutoMigrate(&model.User{})
+	if err != nil {
+		return fmt.Errorf("error migrating database: %v", err)
+	}
+
+	err = DB.AutoMigrate(&model.Image{})
 	if err != nil {
 		return fmt.Errorf("error migrating database: %v", err)
 	}
