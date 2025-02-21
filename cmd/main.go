@@ -2,30 +2,33 @@ package main
 
 import (
 	"gin-gorm-example/configs"
-	routes "gin-gorm-example/internal/router"
+	"gin-gorm-example/internal/application/user"
+	"gin-gorm-example/internal/repository"
+	"gin-gorm-example/routes"
 	"log"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	// 初始化配置
+	// 初始化配置和数据库
 	configs.InitConfig()
+	err := configs.InitDB()
+	if err != nil {
+		log.Fatalf("Failed to initialize database: %v", err)
+	}
 
-	// 初始化数据库
-	configs.InitDB()
+	// 初始化数据库访问层、服务层和控制器
+	userRepo := repository.NewUserRepository(configs.DB)
+	userService := user.NewUserService(userRepo)
+	userController := user.NewUserController(userService)
 
 	// 初始化 Gin 引擎
 	r := gin.Default()
 
-	// 配置静态文件目录（公开上传目录）
-	r.Static(configs.GlobalConfig.ImagePath, configs.GlobalConfig.UploadDir) // 映射上传目录到静态 URL
-
 	// 设置路由
-	routes.SetupRoutes(r)
+	routes.SetupRoutes(r, userController)
 
 	// 启动服务器
-	if err := r.Run(":8080"); err != nil {
-		log.Fatal("failed to start server: ", err)
-	}
+	r.Run(":8080")
 }
