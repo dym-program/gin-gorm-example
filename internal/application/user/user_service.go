@@ -1,10 +1,15 @@
-package application
+package user
 
 import (
 	"fmt"
 	"gin-gorm-example/internal/model"
 	"gin-gorm-example/internal/repository"
 )
+
+// 定义服务接口，避免直接依赖具体实现
+type UserServiceInterface interface {
+	GetUserByID(id string) (*model.User, error)
+}
 
 // UserService 服务层，封装用户相关的业务逻辑
 type UserService struct {

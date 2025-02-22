@@ -1,7 +1,6 @@
 package user
 
 import (
-	"gin-gorm-example/internal/application"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -9,11 +8,11 @@ import (
 
 // UserController 控制器，处理 HTTP 请求
 type UserController struct {
-	UserService *application.UserService
+	UserService UserServiceInterface // 依赖 UserService 接口
 }
 
 // NewUserController 创建新的用户控制器
-func NewUserController(userService *application.UserService) *UserController {
+func NewUserController(userService UserServiceInterface) *UserController {
 	return &UserController{UserService: userService}
 }
 

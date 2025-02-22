@@ -4,7 +4,7 @@ import (
 	"gin-gorm-example/configs"
 	"gin-gorm-example/internal/application/user"
 	"gin-gorm-example/internal/repository"
-	"gin-gorm-example/routes"
+	routes "gin-gorm-example/internal/router"
 	"log"
 
 	"github.com/gin-gonic/gin"
