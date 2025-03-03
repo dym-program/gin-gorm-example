@@ -36,10 +36,15 @@ func (s *ImageService) UploadImage(filename string, fileData []byte) (*model.Ima
 	uniqueName := fmt.Sprintf("%d_%s", time.Now().Unix(), filename)
 	savePath := filepath.Join(s.UploadDir, uniqueName)
 
-	// 将文件数据保存到磁盘，此处示例省略错误处理，实际使用中请使用 os.WriteFile 或 ioutil.WriteFile
-	// 例如：os.WriteFile(savePath, fileData, 0644)
-	// 此处假设文件保存成功
-	os.WriteFile(savePath, fileData, 0644)
+	if err := os.MkdirAll(s.UploadDir, os.ModePerm); err != nil {
+		return nil, fmt.Errorf("failed to create upload directory: %w", err)
+	}
+
+	err := os.WriteFile(savePath, fileData, 0644)
+	if err != nil {
+		return nil, fmt.Errorf("failed to write file: %w", err)
+	}
+
 	imgURL := s.ImageURL + uniqueName
 	image := &model.Image{
 		ImgName: uniqueName,
